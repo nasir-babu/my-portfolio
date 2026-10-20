@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import * as Icons from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { projectsData } from '../data/projectsData';
 
 export const Projects = () => {
@@ -30,15 +31,21 @@ export const Projects = () => {
   };
 
   return (
-    <section id="projects" className="py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden bg-slate-900">
+    <section id="projects" className="py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden bg-slate-900 text-white">
       {/* Background Ambient Glows */}
       <div className="absolute top-1/3 right-10 w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-[150px] pointer-events-none"></div>
       <div className="absolute bottom-10 left-10 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[150px] pointer-events-none"></div>
 
       <div className="max-w-7xl mx-auto relative z-10">
         
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12 space-y-3">
+        {/* Section Header with Scroll Animation */}
+        <motion.div 
+          initial={{ opacity: 0, y: -30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+          className="text-center max-w-3xl mx-auto mb-12 space-y-3"
+        >
           <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-semibold tracking-widest uppercase">
             <Icons.FolderGit2 size={14} />
             <span>Portfolio Showcase</span>
@@ -50,15 +57,19 @@ export const Projects = () => {
             Click any thumbnail above or use the side arrows on the main view below to switch projects.
           </p>
           <div className="w-20 h-1 bg-gradient-to-r from-cyan-400 to-blue-500 mx-auto rounded-full mt-3"></div>
-        </div>
+        </motion.div>
 
-        {/* TOP: Gallery Selector Thumbnails (Static 4 Grid as you preferred) */}
+        {/* TOP: Gallery Selector Thumbnails */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-12">
-          {projectsData.map((project) => {
+          {projectsData.map((project, idx) => {
             const isActive = activeProject.id === project.id;
             return (
-              <button
+              <motion.button
                 key={project.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: idx * 0.1 }}
                 onClick={() => setActiveProject(project)}
                 className={`relative aspect-square w-full rounded-2xl overflow-hidden border-2 transition-all duration-300 group text-left ${
                   isActive
@@ -79,13 +90,19 @@ export const Projects = () => {
                     {project.subtitle || "Featured Web App"}
                   </span>
                 </div>
-              </button>
+              </motion.button>
             );
           })}
         </div>
 
         {/* BOTTOM: Main Active Project Showcase Display with Side Arrow Controls */}
-        <div className="relative">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="relative"
+        >
           
           {/* Left Arrow for Bottom Box */}
           <button
@@ -228,138 +245,149 @@ export const Projects = () => {
             </div>
 
           </div>
-        </div>
+        </motion.div>
 
       </div>
 
-      {/* ENHANCED GLASS & FONT MODAL */}
-      {modalProject && (
-        <div className="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-xl flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
-          <div
-            className="relative max-w-5xl w-full bg-slate-900/90 rounded-3xl border border-cyan-500/30 p-6 sm:p-10 shadow-[0_0_50px_rgba(6,182,212,0.15)] my-8 space-y-8 text-slate-100 max-h-[90vh] overflow-y-auto backdrop-blur-2xl overflow-hidden"
-            onClick={(e) => e.stopPropagation()}
+      {/* ENHANCED GLASS & FONT MODAL WITH FRAMER MOTION */}
+      <AnimatePresence>
+        {modalProject && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-xl flex items-center justify-center p-4 sm:p-6 overflow-y-auto"
           >
-            {/* Background Project Image Blur Effect */}
-            <div 
-              className="absolute inset-0 bg-cover bg-top opacity-10 blur-2xl pointer-events-none"
-              style={{ backgroundImage: `url(${modalProject.image})` }}
-            ></div>
-
-            {/* Modal Close Button */}
-            <button
-              onClick={() => setModalProject(null)}
-              className="absolute top-6 right-6 p-3 rounded-full bg-slate-800/80 hover:bg-cyan-500 hover:text-slate-950 text-slate-200 transition-all z-20 border border-slate-700 shadow-lg"
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ duration: 0.3 }}
+              className="relative max-w-5xl w-full bg-slate-900/90 rounded-3xl border border-cyan-500/30 p-6 sm:p-10 shadow-[0_0_50px_rgba(6,182,212,0.15)] my-8 space-y-8 text-slate-100 max-h-[90vh] overflow-y-auto backdrop-blur-2xl overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
             >
-              <X size={24} />
-            </button>
+              {/* Background Project Image Blur Effect */}
+              <div 
+                className="absolute inset-0 bg-cover bg-top opacity-10 blur-2xl pointer-events-none"
+                style={{ backgroundImage: `url(${modalProject.image})` }}
+              ></div>
 
-            {/* Header */}
-            <div className="relative z-10 border-b border-slate-800 pb-6">
-              <span className="text-xs sm:text-sm font-bold px-3.5 py-1.5 rounded-lg bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 uppercase tracking-widest">
-                Project Deep-Dive Case Study
-              </span>
-              <h3 className="text-3xl sm:text-5xl font-black text-white mt-4 tracking-tight">
-                {modalProject.title}
-              </h3>
-              <p className="text-base sm:text-lg text-cyan-400 mt-2 font-semibold">
-                {modalProject.subtitle}
-              </p>
-              <p className="text-base sm:text-lg text-slate-200 mt-4 leading-relaxed font-normal">
-                {modalProject.description}
-              </p>
-            </div>
+              {/* Modal Close Button */}
+              <button
+                onClick={() => setModalProject(null)}
+                className="absolute top-6 right-6 p-3 rounded-full bg-slate-800/80 hover:bg-cyan-500 hover:text-slate-950 text-slate-200 transition-all z-20 border border-slate-700 shadow-lg cursor-pointer"
+              >
+                <X size={24} />
+              </button>
 
-            {/* Key Features */}
-            {modalProject.keyFeatures && (
-              <div className="relative z-10 space-y-4">
-                <h4 className="text-base font-bold text-cyan-300 uppercase tracking-wider flex items-center space-x-2">
-                  <CheckCircle size={20} className="text-cyan-400" />
-                  <span>Key Features & Modules</span>
-                </h4>
-                
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                  {Object.entries(modalProject.keyFeatures).map(([role, features], fIdx) => (
-                    <div key={fIdx} className="p-5 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-3 backdrop-blur-md shadow-inner">
-                      <h5 className="text-sm font-bold text-amber-400 uppercase tracking-wider border-b border-slate-800 pb-2">
-                        {role} Module
-                      </h5>
-                      <ul className="space-y-2 text-sm text-slate-200 list-disc list-inside">
-                        {features.map((feat, i) => (
-                          <li key={i} className="leading-relaxed font-medium">{feat}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
+              {/* Header */}
+              <div className="relative z-10 border-b border-slate-800 pb-6">
+                <span className="text-xs sm:text-sm font-bold px-3.5 py-1.5 rounded-lg bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 uppercase tracking-widest">
+                  Project Deep-Dive Case Study
+                </span>
+                <h3 className="text-3xl sm:text-5xl font-black text-white mt-4 tracking-tight">
+                  {modalProject.title}
+                </h3>
+                <p className="text-base sm:text-lg text-cyan-400 mt-2 font-semibold">
+                  {modalProject.subtitle}
+                </p>
+                <p className="text-base sm:text-lg text-slate-200 mt-4 leading-relaxed font-normal">
+                  {modalProject.description}
+                </p>
+              </div>
+
+              {/* Key Features */}
+              {modalProject.keyFeatures && (
+                <div className="relative z-10 space-y-4">
+                  <h4 className="text-base font-bold text-cyan-300 uppercase tracking-wider flex items-center space-x-2">
+                    <CheckCircle size={20} className="text-cyan-400" />
+                    <span>Key Features & Modules</span>
+                  </h4>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                    {Object.entries(modalProject.keyFeatures).map(([role, features], fIdx) => (
+                      <div key={fIdx} className="p-5 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-3 backdrop-blur-md shadow-inner">
+                        <h5 className="text-sm font-bold text-amber-400 uppercase tracking-wider border-b border-slate-800 pb-2">
+                          {role} Module
+                        </h5>
+                        <ul className="space-y-2 text-sm text-slate-200 list-disc list-inside">
+                          {features.map((feat, i) => (
+                            <li key={i} className="leading-relaxed font-medium">{feat}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
                 </div>
+              )}
+
+              {/* Challenges & Solutions */}
+              {(modalProject.challenges || modalProject.solutions) && (
+                <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-5">
+                  {modalProject.challenges && (
+                    <div className="p-5 rounded-2xl bg-slate-950/80 border border-rose-500/30 space-y-3 backdrop-blur-md">
+                      <h4 className="text-sm font-bold text-rose-400 uppercase tracking-wider flex items-center space-x-2">
+                        <span>Technical Challenges</span>
+                      </h4>
+                      <p className="text-sm sm:text-base text-slate-200 leading-relaxed font-normal">
+                        {Array.isArray(modalProject.challenges) ? modalProject.challenges[0] : modalProject.challenges}
+                      </p>
+                    </div>
+                  )}
+
+                  {modalProject.solutions && (
+                    <div className="p-5 rounded-2xl bg-slate-950/80 border border-emerald-500/30 space-y-3 backdrop-blur-md">
+                      <h4 className="text-sm font-bold text-emerald-400 uppercase tracking-wider flex items-center space-x-2">
+                        <span>Solutions Implemented</span>
+                      </h4>
+                      <p className="text-sm sm:text-base text-slate-200 leading-relaxed font-normal">
+                        {Array.isArray(modalProject.solutions) ? modalProject.solutions[0] : modalProject.solutions}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Future Plans */}
+              {modalProject.futurePlans && (
+                <div className="relative z-10 p-5 rounded-2xl bg-slate-950/80 border border-indigo-500/30 space-y-3 backdrop-blur-md">
+                  <h4 className="text-sm font-bold text-indigo-400 uppercase tracking-wider">
+                    Future Roadmap & Enhancements
+                  </h4>
+                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm sm:text-base text-slate-200 list-disc list-inside">
+                    {modalProject.futurePlans.map((plan, pIdx) => (
+                      <li key={pIdx} className="leading-relaxed font-medium">{plan}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Footer Modal Actions */}
+              <div className="relative z-10 pt-6 border-t border-slate-800 flex flex-wrap gap-4 justify-end">
+                <a
+                  href={modalProject.liveUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-7 py-3 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-bold text-sm flex items-center space-x-2 shadow-lg shadow-cyan-400/20 transition-all hover:-translate-y-0.5"
+                >
+                  <span>Live Preview</span>
+                  <ExternalLink size={16} />
+                </a>
+                <a
+                  href={modalProject.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-7 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-700 font-bold text-sm flex items-center space-x-2 transition-all hover:-translate-y-0.5"
+                >
+                  <Github size={16} className="text-cyan-400" />
+                  <span>Source Code</span>
+                </a>
               </div>
-            )}
 
-            {/* Challenges & Solutions */}
-            {(modalProject.challenges || modalProject.solutions) && (
-              <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-5">
-                {modalProject.challenges && (
-                  <div className="p-5 rounded-2xl bg-slate-950/80 border border-rose-500/30 space-y-3 backdrop-blur-md">
-                    <h4 className="text-sm font-bold text-rose-400 uppercase tracking-wider flex items-center space-x-2">
-                      <span>Technical Challenges</span>
-                    </h4>
-                    <p className="text-sm sm:text-base text-slate-200 leading-relaxed font-normal">
-                      {Array.isArray(modalProject.challenges) ? modalProject.challenges[0] : modalProject.challenges}
-                    </p>
-                  </div>
-                )}
-
-                {modalProject.solutions && (
-                  <div className="p-5 rounded-2xl bg-slate-950/80 border border-emerald-500/30 space-y-3 backdrop-blur-md">
-                    <h4 className="text-sm font-bold text-emerald-400 uppercase tracking-wider flex items-center space-x-2">
-                      <span>Solutions Implemented</span>
-                    </h4>
-                    <p className="text-sm sm:text-base text-slate-200 leading-relaxed font-normal">
-                      {Array.isArray(modalProject.solutions) ? modalProject.solutions[0] : modalProject.solutions}
-                    </p>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Future Plans */}
-            {modalProject.futurePlans && (
-              <div className="relative z-10 p-5 rounded-2xl bg-slate-950/80 border border-indigo-500/30 space-y-3 backdrop-blur-md">
-                <h4 className="text-sm font-bold text-indigo-400 uppercase tracking-wider">
-                  Future Roadmap & Enhancements
-                </h4>
-                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm sm:text-base text-slate-200 list-disc list-inside">
-                  {modalProject.futurePlans.map((plan, pIdx) => (
-                    <li key={pIdx} className="leading-relaxed font-medium">{plan}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {/* Footer Modal Actions */}
-            <div className="relative z-10 pt-6 border-t border-slate-800 flex flex-wrap gap-4 justify-end">
-              <a
-                href={modalProject.liveUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-7 py-3 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-bold text-sm flex items-center space-x-2 shadow-lg shadow-cyan-400/20 transition-all hover:-translate-y-0.5"
-              >
-                <span>Live Preview</span>
-                <ExternalLink size={16} />
-              </a>
-              <a
-                href={modalProject.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-7 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-700 font-bold text-sm flex items-center space-x-2 transition-all hover:-translate-y-0.5"
-              >
-                <Github size={16} className="text-cyan-400" />
-                <span>Source Code</span>
-              </a>
-            </div>
-
-          </div>
-        </div>
-      )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 };

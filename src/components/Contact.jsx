@@ -1,5 +1,6 @@
 import { useState } from "react";
 import * as Icons from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export const Contact = () => {
   const [result, setResult] = useState("");
@@ -18,7 +19,6 @@ export const Contact = () => {
     setResult("Sending...");
 
     const formData = new FormData(event.target);
-
     formData.append("access_key", "c4e79824-1267-4f83-a0aa-8877c0a43170");
 
     try {
@@ -48,15 +48,21 @@ export const Contact = () => {
   return (
     <section
       id="contact"
-      className="py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden bg-slate-900"
+      className="py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden bg-slate-900 text-white"
     >
       {/* Background Cyberpunk Ambient Glows */}
       <div className="absolute top-1/4 left-10 w-[450px] h-[450px] bg-cyan-500/10 rounded-full blur-[150px] pointer-events-none"></div>
       <div className="absolute bottom-10 right-10 w-[450px] h-[450px] bg-blue-600/10 rounded-full blur-[150px] pointer-events-none"></div>
 
       <div className="max-w-7xl mx-auto relative z-10">
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
+        {/* Section Header with Scroll Animation */}
+        <motion.div 
+          initial={{ opacity: 0, y: -30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+          className="text-center max-w-3xl mx-auto mb-16 space-y-3"
+        >
           <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-semibold tracking-widest uppercase">
             <Mail size={14} />
             <span>Get In Touch</span>
@@ -72,12 +78,19 @@ export const Contact = () => {
             a message below!
           </p>
           <div className="w-20 h-1 bg-gradient-to-r from-cyan-400 to-blue-500 mx-auto rounded-full mt-3"></div>
-        </div>
+        </motion.div>
 
         {/* Contact Grid: Info & Form */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start max-w-5xl mx-auto">
-          {/* LEFT: Contact Information Cards (5 Cols) */}
-          <div className="lg:col-span-5 space-y-6">
+          
+          {/* LEFT: Contact Information Cards (5 Cols) with Slide-In */}
+          <motion.div 
+            initial={{ opacity: 0, x: -40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="lg:col-span-5 space-y-6"
+          >
             <div className="p-8 rounded-3xl bg-slate-850/90 border border-slate-700/80 backdrop-blur-md shadow-2xl space-y-6">
               <div>
                 <h3 className="text-xl font-bold text-white">
@@ -140,10 +153,16 @@ export const Contact = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          {/* RIGHT: Functional Contact Form (7 Cols) */}
-          <div className="lg:col-span-7">
+          {/* RIGHT: Functional Contact Form (7 Cols) with Slide-In */}
+          <motion.div 
+            initial={{ opacity: 0, x: 40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="lg:col-span-7"
+          >
             <div className="p-8 rounded-3xl bg-slate-850/90 border border-slate-700/80 backdrop-blur-md shadow-2xl">
               <form onSubmit={onSubmit} className="space-y-6">
                 {/* Name & Email Fields */}
@@ -219,26 +238,33 @@ export const Contact = () => {
                   <Send size={18} />
                 </button>
 
-                {/* Status Result Message */}
-                {result && (
-                  <div
-                    className={`p-4 rounded-xl text-xs sm:text-sm font-semibold text-center flex items-center justify-center space-x-2 ${
-                      result.includes("success")
-                        ? "bg-emerald-500/10 border border-emerald-500/30 text-emerald-400"
-                        : "bg-cyan-500/10 border border-cyan-500/30 text-cyan-300"
-                    }`}
-                  >
-                    {result.includes("success") ? (
-                      <CheckCircle size={18} />
-                    ) : (
-                      <AlertCircle size={18} />
-                    )}
-                    <span>{result}</span>
-                  </div>
-                )}
+                {/* Status Result Message with Framer Motion */}
+                <AnimatePresence>
+                  {result && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                      transition={{ duration: 0.3 }}
+                      className={`p-4 rounded-xl text-xs sm:text-sm font-semibold text-center flex items-center justify-center space-x-2 ${
+                        result.includes("success")
+                          ? "bg-emerald-500/10 border border-emerald-500/30 text-emerald-400"
+                          : "bg-cyan-500/10 border border-cyan-500/30 text-cyan-300"
+                      }`}
+                    >
+                      {result.includes("success") ? (
+                        <CheckCircle size={18} />
+                      ) : (
+                        <AlertCircle size={18} />
+                      )}
+                      <span>{result}</span>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </form>
             </div>
-          </div>
+          </motion.div>
+
         </div>
       </div>
     </section>

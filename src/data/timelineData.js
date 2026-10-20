@@ -58,13 +58,5 @@ export const educationData = [
     result: "Second Division",
     details: "Focused on organizational business management, operational workflows, and systematic accounting."
   },
-  {
-    id: 4,
-    period: "2012 - 2013",
-    degree: "Higher Secondary Certificate (HSC)",
-    institution: "Dhaka Board",
-    type: "Academic Degree",
-    result: "GPA 3.80",
-    details: "Business Studies stream with basic computer studies foundation."
-  }
+
 ];

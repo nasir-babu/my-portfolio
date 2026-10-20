@@ -1,5 +1,56 @@
+import { useState, useEffect, useRef } from 'react';
 import * as Icons from 'lucide-react';
+import { motion } from 'framer-motion';
 import { aboutData } from '../data/aboutData';
+
+// Custom CountUp Component (No Third-Party Package Needed)
+const PureCountUp = ({ value }) => {
+  const numericVal = parseInt(String(value).replace(/\D/g, '')) || 0;
+  const suffix = String(value).replace(/[0-9]/g, '');
+
+  const [count, setCount] = useState(0);
+  const [hasAnimated, setHasAnimated] = useState(false);
+  const elementRef = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasAnimated) {
+          setHasAnimated(true);
+          let start = 0;
+          const duration = 1800; // 1.8 seconds
+          const steps = 40;
+          const increment = numericVal / steps;
+          const stepTime = duration / steps;
+
+          const timer = setInterval(() => {
+            start += increment;
+            if (start >= numericVal) {
+              setCount(numericVal);
+              clearInterval(timer);
+            } else {
+              setCount(Math.floor(start));
+            }
+          }, stepTime);
+        }
+      },
+      { threshold: 0.2 }
+    );
+
+    if (elementRef.current) {
+      observer.observe(elementRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [numericVal, hasAnimated]);
+
+  return (
+    <span ref={elementRef}>
+      {count}
+      {suffix}
+    </span>
+  );
+};
 
 export const About = () => {
   const Code = Icons.Code2 || Icons.Code;
@@ -10,15 +61,21 @@ export const About = () => {
   const Flame = Icons.Flame || Icons.Zap;
 
   return (
-    <section id="about" className="py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden bg-slate-900">
+    <section id="about" className="py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden bg-slate-900 text-white">
       {/* Background Cyberpunk Ambient Glows */}
       <div className="absolute top-1/4 left-10 w-[450px] h-[450px] bg-cyan-500/10 rounded-full blur-[140px] pointer-events-none"></div>
       <div className="absolute bottom-10 right-10 w-[450px] h-[450px] bg-blue-600/10 rounded-full blur-[140px] pointer-events-none"></div>
 
       <div className="max-w-7xl mx-auto relative z-10">
         
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
+        {/* Section Header with Scroll Animation */}
+        <motion.div 
+          initial={{ opacity: 0, y: -30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+          className="text-center max-w-3xl mx-auto mb-16 space-y-3"
+        >
           <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-semibold tracking-widest uppercase">
             <Icons.UserCheck size={14} />
             <span>Developer Journey</span>
@@ -30,13 +87,19 @@ export const About = () => {
             Architecting Scalable Web Applications with Persistence, Clean Code, & Backend Mastery.
           </p>
           <div className="w-20 h-1 bg-gradient-to-r from-cyan-400 to-blue-500 mx-auto rounded-full mt-3"></div>
-        </div>
+        </motion.div>
 
         {/* Main Grid: Bio Story (Left) & Stats / Core Strengths (Right) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
           
-          {/* LEFT COLUMN: My Story & Journey (7 Cols) */}
-          <div className="lg:col-span-7 space-y-8">
+          {/* LEFT COLUMN: My Story & Journey (7 Cols) with Slide-In */}
+          <motion.div 
+            initial={{ opacity: 0, x: -40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="lg:col-span-7 space-y-8"
+          >
             <div className="p-8 rounded-3xl bg-slate-850/90 border border-slate-700/80 backdrop-blur-md shadow-2xl relative overflow-hidden group">
               <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl group-hover:bg-cyan-500/20 transition-all pointer-events-none"></div>
 
@@ -55,7 +118,7 @@ export const About = () => {
               </div>
 
               <div className="space-y-4 text-slate-300 text-sm sm:text-base leading-relaxed">
-                {aboutData.bio.map((paragraph, index) => (
+                {aboutData?.bio?.map((paragraph, index) => (
                   <p key={index} className="font-normal">
                     {paragraph}
                   </p>
@@ -90,9 +153,13 @@ export const About = () => {
                 Core Competencies & Mindset
               </h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {aboutData.strengths.map((strength, idx) => (
-                  <div
+                {aboutData?.strengths?.map((strength, idx) => (
+                  <motion.div
                     key={idx}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: idx * 0.1 }}
                     className="p-5 rounded-2xl bg-slate-850/80 border border-slate-800 hover:border-cyan-500/40 transition-all duration-300 space-y-2 backdrop-blur-sm"
                   >
                     <div className="flex items-center space-x-2 text-cyan-400">
@@ -102,24 +169,34 @@ export const About = () => {
                     <p className="text-xs text-slate-300 leading-relaxed font-normal">
                       {strength.description}
                     </p>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          {/* RIGHT COLUMN: Quick Stats Grid & Education Badges (5 Cols) */}
-          <div className="lg:col-span-5 space-y-8">
+          {/* RIGHT COLUMN: Quick Stats Grid & Education Badges (5 Cols) with Slide-In */}
+          <motion.div 
+            initial={{ opacity: 0, x: 40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="lg:col-span-5 space-y-8"
+          >
             
             {/* Quick Stats Grid */}
             <div className="grid grid-cols-2 gap-4">
-              {aboutData.stats.map((stat, idx) => (
-                <div
+              {aboutData?.stats?.map((stat, idx) => (
+                <motion.div
                   key={idx}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: idx * 0.1 }}
                   className="p-6 rounded-2xl bg-slate-850/90 border border-slate-800 hover:border-cyan-500/50 transition-all duration-300 text-center space-y-1 shadow-lg backdrop-blur-md group"
                 >
                   <span className="text-3xl sm:text-4xl font-black text-white group-hover:text-cyan-400 transition-colors">
-                    {stat.value}
+                    <PureCountUp value={stat.value} />
                   </span>
                   <p className="text-xs font-bold text-cyan-300 uppercase tracking-wider">
                     {stat.label}
@@ -127,7 +204,7 @@ export const About = () => {
                   <p className="text-[11px] text-slate-400">
                     {stat.description}
                   </p>
-                </div>
+                </motion.div>
               ))}
             </div>
 
@@ -170,7 +247,7 @@ export const About = () => {
               </div>
             </div>
 
-          </div>
+          </motion.div>
 
         </div>
 

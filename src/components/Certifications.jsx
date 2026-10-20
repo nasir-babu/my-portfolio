@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import * as Icons from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import certificateImgLevel_1 from '../assets/Programming-Hero Certificate.jpg'; 
 
 export const Certifications = () => {
@@ -21,14 +22,20 @@ export const Certifications = () => {
   ];
 
   return (
-    <section id="certifications" className="py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <section id="certifications" className="py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden text-white">
       {/* Background Glow */}
       <div className="absolute bottom-10 right-10 w-96 h-96 bg-blue-600/10 rounded-full blur-[130px] pointer-events-none"></div>
 
       <div className="max-w-7xl mx-auto relative z-10">
         
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
+        {/* Section Header with Scroll Animation */}
+        <motion.div 
+          initial={{ opacity: 0, y: -30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+          className="text-center max-w-3xl mx-auto mb-16 space-y-3"
+        >
           <h2 className="text-xs sm:text-sm font-semibold text-cyan-400 tracking-widest uppercase">
             Achievements
           </h2>
@@ -36,13 +43,17 @@ export const Certifications = () => {
             Certifications & <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">Credentials</span>
           </h3>
           <div className="w-16 h-1 bg-gradient-to-r from-cyan-400 to-blue-500 mx-auto rounded-full mt-2"></div>
-        </div>
+        </motion.div>
 
         {/* Certificate Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center">
           {certificates.map((cert, idx) => (
-            <div 
+            <motion.div 
               key={idx}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: idx * 0.15 }}
               className="p-6 rounded-3xl bg-slate-900/80 border border-slate-800 hover:border-cyan-500/40 transition-all duration-300 backdrop-blur-md shadow-xl flex flex-col justify-between group"
             >
               <div>
@@ -90,39 +101,51 @@ export const Certifications = () => {
               <div className="pt-6 mt-6 border-t border-slate-800/80">
                 <button 
                   onClick={() => setSelectedImg(cert.image)}
-                  className="w-full py-3 px-4 rounded-xl bg-slate-800 hover:bg-cyan-400 hover:text-slate-900 text-cyan-400 font-semibold text-xs sm:text-sm flex items-center justify-center space-x-2 transition-all border border-slate-700/60"
+                  className="w-full py-3 px-4 rounded-xl bg-slate-800 hover:bg-cyan-400 hover:text-slate-900 text-cyan-400 font-semibold text-xs sm:text-sm flex items-center justify-center space-x-2 transition-all border border-slate-700/60 cursor-pointer"
                 >
                   {Eye && <Eye size={16} />}
                   <span>View Certificate</span>
                 </button>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
 
       </div>
 
-      {/* Lightbox / Modal for Certificate Image */}
-      {selectedImg && (
-        <div 
-          className="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-8"
-          onClick={() => setSelectedImg(null)}
-        >
-          <div className="relative max-w-4xl w-full bg-slate-900 rounded-2xl border border-slate-800 p-2 shadow-2xl overflow-hidden" onClick={(e) => e.stopPropagation()}>
-            <button 
-              onClick={() => setSelectedImg(null)}
-              className="absolute top-4 right-4 z-10 p-2 rounded-full bg-slate-950/80 text-slate-300 hover:text-white hover:bg-slate-800 transition-all border border-slate-700"
+      {/* Lightbox / Modal for Certificate Image with Framer Motion */}
+      <AnimatePresence>
+        {selectedImg && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-8"
+            onClick={() => setSelectedImg(null)}
+          >
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ duration: 0.3 }}
+              className="relative max-w-4xl w-full bg-slate-900 rounded-2xl border border-slate-800 p-2 shadow-2xl overflow-hidden" 
+              onClick={(e) => e.stopPropagation()}
             >
-              {X && <X size={20} />}
-            </button>
-            <img 
-              src={selectedImg} 
-              alt="Certificate Full View" 
-              className="w-full h-auto max-h-[85vh] object-contain rounded-xl"
-            />
-          </div>
-        </div>
-      )}
+              <button 
+                onClick={() => setSelectedImg(null)}
+                className="absolute top-4 right-4 z-10 p-2 rounded-full bg-slate-950/80 text-slate-300 hover:text-white hover:bg-slate-800 transition-all border border-slate-700 cursor-pointer"
+              >
+                {X && <X size={20} />}
+              </button>
+              <img 
+                src={selectedImg} 
+                alt="Certificate Full View" 
+                className="w-full h-auto max-h-[85vh] object-contain rounded-xl"
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 };
