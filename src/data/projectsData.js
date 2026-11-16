@@ -267,8 +267,8 @@ export const projectsData = [
       "A dynamic, role-based e-commerce platform built with vanilla JavaScript. It demonstrates real-world features like API integration, persistent cart management, and smooth GSAP animations.",
     image:
       "https://res.cloudinary.com/xhmxwbu4/image/upload/v1791971604/screencapture-md-nasir301-github-io-next-buy-ecommerce-2026-10-14-15_55_13_1.jpg?w=1000&auto=format&fit=crop&q=80",
-    liveUrl: "https://md-nasir301.github.io/next-buy-ecommerce/",
-    githubUrl: "https://github.com/MD-Nasir301/next-buy-ecommerce",
+    liveUrl: "https://nasir-babu.github.io/next-buy-ecommerce/",
+    githubUrl: "https://github.com/nasir-babu/next-buy-ecommerce",
     tags: ["JavaScript (ES6+)", "HTML5", "CSS3", "Bootstrap 5", "GSAP"],
     techStack: {
       frontend: ["HTML5", "CSS3", "Bootstrap 5", "JavaScript (ES6+)"],
